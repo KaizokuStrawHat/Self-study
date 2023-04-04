@@ -21,7 +21,7 @@ const cities = [
     },
     {
         id:6,
-        name: "New York",
+        name: "New_York",
     },
     {
         id:7,

@@ -1,76 +1,117 @@
 const BASE_URL = "http://api.weatherapi.com/v1";
 const API_KEY = "?key=349564cc6f5b4e67bbb202230231403"
 const QUERY = "&q="
+const DAYS_URL = '&days=6'
 
 export async function getFormattedData(infoType, searchParam){
-    return await fetch(BASE_URL + infoType + API_KEY + QUERY + searchParam)
+    console.log(BASE_URL + infoType + API_KEY + QUERY + searchParam + DAYS_URL)
+    return await fetch(BASE_URL + infoType + API_KEY + QUERY + searchParam + DAYS_URL)
     .then(res => res.json())    
     .then(data => formatData(data))
 }
 
 export function formatData(data)
 {
+    console.log(data, 'from weatherService')
     const { 
         location: {
             name, 
-            region,
             localtime
         },
         current: {
             temp_c,
-            condition : { text }, // returns text
+            condition : { text, icon }, 
             feelslike_c,
             humidity,           
             wind_kph
         },
-        forecast: {
-            //cut this entire block
-                forecastday: {
-                    day : { maxtemp_c, mintemp_c},
-                    astro : { sunrise, sunset } 
-                }
-        }
-    } = data
-
-    // Preparing the destructing, getting the ingredient first
-    const {
-        forecast: { 
-            forecastday
-        }
+        // Preparing the destructing -- getting the ingredient first
+        forecast: { forecastday }
     } = data 
 
-    // Using an array placeholder to catch all the objects
-    const ForecastData = [
-        forecastday[0],
-        forecastday.slice(1).map(({
-            date,
-            day: {
-                avgtemp_c,
-                condition: {
-                    text
-                }
-            },
-        }) => ({text, date, avgtemp_c}) )
-    ]
-    console.log({ name, region, localtime, temp_c, text, feelslike_c, 
-        humidity, wind_kph, maxtemp_c, mintemp_c, sunrise, sunset, 
-        ...ForecastData})
-    return { name, region, localtime, temp_c, text, feelslike_c, 
-        humidity, wind_kph, maxtemp_c, mintemp_c, sunrise, sunset, 
-        ...ForecastData}
+    // Deconstruct forecastday array, selecting desired properties
+    const { 
+        day: { maxtemp_c, mintemp_c},
+        astro: { sunrise, sunset},
+        hour
+    } = forecastday[0] 
+
+    // Current time and date
+    const timeString = localtime.split(' ')[1]
+    const hourInteger = parseInt(timeString.split(':')[0])
+
+    // Converting military time to normal time, using for Current and Hourly
+    let time = new Date();
+    // Formatting for current local time
+    time.setHours(hourInteger); 
+    time.setMinutes(parseInt(timeString.split(':')[1])); 
+    time.setSeconds(0);
+    let currentLocaltime = time.toLocaleTimeString('en-us', { hour: 'numeric', minute: 'numeric', hour12: true});
+    // Hourly Local time and Local date
+    const HourlyForecast = []
+    for(let hourPosition = Math.round(hourInteger), x = 0; x < 5; x++, hourPosition++)
+    {
+        // x = to display only 5 hours ahead, Current time + x
+        if (hourPosition > 23) // Array only has limit of [0] to [23]
+            hourPosition = 0
+        time.setHours(hourPosition)
+        
+
+        // Converting military time to standard time & fetching desired properties:
+        const {
+            condition: {text, icon},
+            temp_c
+        } = hour[hourPosition]
+
+        HourlyForecast.push(
+            {
+                time: time.toLocaleTimeString('en-us', { hour: 'numeric', hour12: true}), 
+                text, 
+                icon, 
+                temp_c: Math.round(temp_c)
+            });
+    }
+
+    // const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    // // Using an array placeholder to catch all the objects
+    
+    // const DailyForecast = 
+    //     forecastday.slice(1).map((item) => {
+
+    //         const {
+    //             date,
+    //             day: {
+    //                 avgtemp_c,
+    //                 condition: {
+    //                     text, icon
+    //                 }}
+    //         } = item;
+
+    //         /*
+    //             This code apparently gives wrong weekday name,
+    //             wrong by one day, Example: March 25 2023 is Friday -- but it is Saturday
+
+    //             let dateObject = new Date(item.date);
+    //             item.date = weekdays[dateObject.getDay()]; 
+    //             console.log(item.date)
+    //         */
+
+    //         let dateObject = new Date(date);
+    //         // Fixes the problem in expense of longer lines
+
+    //         let dayNo = dateObject.getDay() + 1 
+    //         // Ensures Sunday gets returned and not undefined
+    //         if (dayNo > 6) 
+    //         {
+    //             dayNo = 0 
+    //         }
+    //         return { text, icon, date: weekdays[dayNo], avgtemp_c: Math.round(avgtemp_c) }
+    //     })
+
+    // ^^ Removing due to weatherapi changing their free plan to only 3 days of forecast 
+    // instead of 5 days of forecast
+
+    return ({ name, localtime, temp_c, text, feelslike_c, 
+        humidity, wind_kph, maxtemp_c, mintemp_c, sunrise, sunset, currentLocaltime, icon,
+        DailyForecast, HourlyForecast})
 }
-  
-// How to know which day of the week it is just from the given date
-
-// forecast => forecastday => [1][2][3][4][5] => hour => only show the upcoming times
-
-/*
-
-get data 
-format that data by destructuring
-get formatted data -- format it into current
-get formatted data -- format it into hourly and daily
-deconstruct current, hourly, and daily
-return the deconstructed current hourly daily
-
-*/
