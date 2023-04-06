@@ -2,13 +2,12 @@ import React from 'react'
 import cities from './cities.js'
 import {v4 as uuidv4} from 'uuid';
 
-export default function TopButtons({setCity}) {
+export default function TopButtons(props) {
 
   function cityButtonclicked (id)
   {
     const clickedCity = cities.find( city => city.id === id);
-    setCity(clickedCity);
-    console.log('clicked');
+    props.setCity(clickedCity.name); 
   }
 
   return (

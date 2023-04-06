@@ -2,13 +2,17 @@ import React from 'react'
 import { UilClockSeven, UilSchedule } from '@iconscout/react-unicons'
 import {v4 as uuidv4} from 'uuid';
 
-export default function HourlyDailyForecast({data}) {
+export default function HourlyForecast({data}) {
     
     let HourlyArray = data.HourlyForecast
     // let DailyArray = data.DailyForecast
 
   return (
     <div>
+        <div className='flex justify-center mx-4 my-8'>
+                <UilClockSeven/>
+                <p className='inline-block mx-2'>HOURLY</p>
+        </div>
         <div className='mt-12'>
             <div className='flex justify-between'>
                 { HourlyArray.map((item) => {
@@ -21,10 +25,6 @@ export default function HourlyDailyForecast({data}) {
                         </div>
                     )
                 })}
-            </div>
-            <div className='flex justify-center mx-4 my-8'>
-                <UilClockSeven/>
-                <p className='inline-block mx-2'>HOURLY</p>
             </div>
         </div>
         {/* DIVIDER */}

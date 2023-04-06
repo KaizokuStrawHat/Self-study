@@ -1,18 +1,27 @@
 import React from 'react'
 import { UilWind, UilTemperature, UilTear, UilArrowUp, UilArrowDown, UilSun, UilSunset }  from '@iconscout/react-unicons'
 
-export default function MiddlePlaceAndWeather({data}) {
-    let place = data.name
+export default function MiddlePlaceAndWeather({data, isMetric}) {
+    let place = data.name;
     let weather = data.text;
-    let temperature = Math.round(data.temp_c);
-    let feelslike_c = Math.round(data.feelslike_c);
     let humidity = data.humidity;
-    let wind = Math.round(data.wind_kph);
-    let maxtemp_c = Math.round(data.maxtemp_c);
-    let mintemp_c = Math.round(data.mintemp_c);
     let sunrise = data.sunrise;
     let sunset = data.sunset;
+    let temperature = Math.round(data.temp_c);
+    let feelslike_c = Math.round(data.feelslike_c);
+    let wind = Math.round(data.wind_kph) + ' ' + 'km/h';
+    let maxtemp_c = Math.round(data.maxtemp_c);
+    let mintemp_c = Math.round(data.mintemp_c);
 
+    if (isMetric === false)
+    {
+        temperature = Math.round((temperature * 1.8) + 32);
+        feelslike_c = Math.round((feelslike_c * 1.8) + 32);
+        maxtemp_c = Math.round((maxtemp_c * 1.8) + 32);
+        mintemp_c = Math.round((mintemp_c * 1.8) + 32);
+        wind = Math.round(data.wind_kph / 1.609) + ' ' + 'mph';
+    }
+    
   return (
     <div className='grid-rows-4 justify-center'>
         <div className='flex justify-center'>
@@ -40,7 +49,7 @@ export default function MiddlePlaceAndWeather({data}) {
                 <div className='flex'>
                     <UilWind/>  
                     <p>Wind: 
-                        <span> {wind} km/h </span>
+                        <span> {wind}</span>
                     </p>
                 </div>
             </div>

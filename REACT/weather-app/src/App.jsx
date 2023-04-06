@@ -1,55 +1,56 @@
 import { React, useEffect, useState } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import 'tailwindcss/tailwind.css';
 import TopButtons from './components/TopButtons';
 import TopInputs from './components/TopInputs';
 import MiddleDateAndTime from './components/MiddleDateAndTime';
 import MiddlePlaceAndWeather from './components/MiddlePlaceAndWeather';
-import HourlyDailyForecast from './components/HourlyDailyForecast';
-import { getFormattedData, formatData } from './services/weatherService';
+import HourlyForecast from './components/HourlyForecast';
+import { getFormattedData} from './services/weatherService';
+
+// To DO (top to bottom importance):
+
+// has color from hot and cold temperature
+// make smooth transition loop 
+// has color from day and night
+
+// geolocation 2:02:06
+// toggle switch for temperature conversion
+// hover on weather, displays condition name
+
+// validating city name input -- fix searchbar validation -- may seem unfixable
+
 
 export default function App() { 
   const [data, setData] = useState(null)
   const [city, setCity] = useState('Edmonton')
+  const [isMetric, setisMetric] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
       setData(await getFormattedData('/forecast.json', city))
     }
     fetchData()
-  }, [])
-
-  useEffect(() => {
-    console.log(data);
-  }, [data])
+  }, [city])
 
   return(
     <div className='mx-auto max-w-screen-sm mt-4 py-5 h-fit
     bg-gradient-to-br from-cyan-700 to-blue-700 shadow-xl shadow-gray-400'>
-        <TopButtons setCity={setCity}/>
-        <TopInputs/>                                                      
+        <TopButtons setCity={setCity} />
+        <TopInputs setCity={setCity} setisMetric={setisMetric}/>                                                      
         { data && <div>
           <MiddleDateAndTime data={data}/>
-          <MiddlePlaceAndWeather data={data}/>
-          <HourlyDailyForecast data={data}/>
+          <MiddlePlaceAndWeather data={data} isMetric={isMetric}/> 
+          {/* Why is isMetric still false inside this component when clicked */}
+          <HourlyForecast data={data} isMetric={isMetric}/>   
         </div>
         }
+        <ToastContainer autoClose={5000} theme='colored' newestOnTop={true} />
     </div>
   );
 }
-
-
-
-  // What does data return? 
-  // Put fetched data into components
-  // Put button logic on Buttons -- Changes searchParam -- Changes
-  // Put button logic on C and F temp -- Changes Temp for Current Daily and Weekly 
-  // ?? Should I just convert C integers into F OR should I re-fetch data and only get fahrenheit
-
-  // Put search button -- Enter key too
-  // Put textbox logic -- resets placeholder -- Get textbox value, replace searchParam -- if value not valid
-
-
 
   // Modification ideas:
   // Hovering on hourly shows span of 5 hours

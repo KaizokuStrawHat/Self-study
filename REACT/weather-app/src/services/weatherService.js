@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 const BASE_URL = "http://api.weatherapi.com/v1";
 const API_KEY = "?key=349564cc6f5b4e67bbb202230231403"
 const QUERY = "&q="
@@ -8,6 +9,7 @@ export async function getFormattedData(infoType, searchParam){
     return await fetch(BASE_URL + infoType + API_KEY + QUERY + searchParam + DAYS_URL)
     .then(res => res.json())    
     .then(data => formatData(data))
+    .catch(error => toast.error(error))
 }
 
 export function formatData(data)
@@ -29,8 +31,8 @@ export function formatData(data)
         forecast: { forecastday }
     } = data 
 
-    // Deconstruct forecastday array, selecting desired properties
-    const { 
+    // Deconstruct forecastday array, preparing the selection of desired properties
+    const {  
         day: { maxtemp_c, mintemp_c},
         astro: { sunrise, sunset},
         hour
@@ -112,6 +114,5 @@ export function formatData(data)
     // instead of 5 days of forecast
 
     return ({ name, localtime, temp_c, text, feelslike_c, 
-        humidity, wind_kph, maxtemp_c, mintemp_c, sunrise, sunset, currentLocaltime, icon,
-        DailyForecast, HourlyForecast})
+        humidity, wind_kph, maxtemp_c, mintemp_c, sunrise, sunset, currentLocaltime, icon, HourlyForecast})
 }

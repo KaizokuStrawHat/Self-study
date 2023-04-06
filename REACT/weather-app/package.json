@@ -13,6 +13,7 @@
     "@iconscout/react-unicons": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-toastify": "^9.1.2",
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
