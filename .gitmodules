@@ -1,0 +1,3 @@
+[submodule "STUDY DOCUMENTS/submodule/repo"]
+	path = STUDY DOCUMENTS/submodule/repo
+	url = https://github.com/WebDevSimplified/Nodejs-Passport-Login.git
