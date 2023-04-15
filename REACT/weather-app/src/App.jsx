@@ -16,12 +16,16 @@ import { getFormattedData} from './services/weatherService';
 // make smooth transition loop 
 // has color from day and night
 
-// geolocation 2:02:06
+// geolocation 2:02:06 from https://www.youtube.com/watch?v=cWk5EKVxrgo&t=4465s&ab_channel=ProgrammingWithYash 
 // toggle switch for temperature conversion
 // hover on weather, displays condition name
 
-// validating city name input -- fix searchbar validation -- may seem unfixable
+// Integrate node.js:
+// add charts and graphs
 
+// compare your timezone to the timezone of other countries
+
+// validating city name input -- fix searchbar validation -- may seem unfixable
 
 export default function App() { 
   const [data, setData] = useState(null)
@@ -43,7 +47,6 @@ export default function App() {
         { data && <div>
           <MiddleDateAndTime data={data}/>
           <MiddlePlaceAndWeather data={data} isMetric={isMetric}/> 
-          {/* Why is isMetric still false inside this component when clicked */}
           <HourlyForecast data={data} isMetric={isMetric}/>   
         </div>
         }
@@ -51,9 +54,3 @@ export default function App() {
     </div>
   );
 }
-
-  // Modification ideas:
-  // Hovering on hourly shows span of 5 hours
-  // Clicking on hourly shows the rest of the remaining hours
-  // Hovering on daily shows span of 5 days
-  // Clicking on daily shows 14 days
