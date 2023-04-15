@@ -1,3 +1,9 @@
 [submodule "STUDY DOCUMENTS/submodule/repo"]
 	path = STUDY DOCUMENTS/submodule/repo
 	url = https://github.com/WebDevSimplified/Nodejs-Passport-Login.git
+[submodule "1-to_do_list"]
+	path = 1-to_do_list
+	url = https://github.com/KaizokuStrawHat/1-to_do_list.git
+[submodule "2-weather_app"]
+	path = 2-weather_app
+	url = https://github.com/KaizokuStrawHat/2-weather_app.git
